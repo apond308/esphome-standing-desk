@@ -1,6 +1,5 @@
 packages:
   standing_desk: github://apond308/esphome-standing-desk/configs/template.yaml
-  presets_addon: github://apond308/esphome-standing-desk/configs/addons/presets.yaml
 
 substitutions:
   standing_desk_variant: "jarvis"
@@ -20,6 +19,7 @@ substitutions:
   desk_height_name: "Desk Height"
   target_desk_height_name: "Target Desk Height"
   standing_desk_height_units: "in"
+
 
 # Home Assistant buttons for desk control
 button:
@@ -62,3 +62,4 @@ button:
           button_value: ${desk_function_preset_4}
       - delay: 100ms
       - script.execute: handset_button_press_stop
+

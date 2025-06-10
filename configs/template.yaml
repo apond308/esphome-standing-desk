@@ -7,13 +7,13 @@ substitutions:
   target_desk_height_name: "Target Desk Height"
   standing_desk_height_units: "in"
   standing_desk_variant: "auto"
-  desk_function_down: 1
-  desk_function_up: 2
-  desk_function_preset_1: 3
-  desk_function_preset_2: 4
-  desk_function_preset_3: 5
-  desk_function_preset_4: 6
-  desk_function_set_mem: 7
+  desk_function_down: "1"
+  desk_function_up: "2"
+  desk_function_preset_1: "3"
+  desk_function_preset_2: "4"
+  desk_function_preset_3: "5"
+  desk_function_preset_4: "6"
+  desk_function_set_mem: "7"
 
 
 uart:
