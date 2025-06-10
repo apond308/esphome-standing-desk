@@ -21,8 +21,6 @@ packages:
 substitutions:
   # Required (replace these with your own values!)
   standing_desk_uart_rx_pin: D1
-  standing_desk_up_pin: D3
-  standing_desk_down_pin: D4
   standing_desk_min_height: "25.2"
   standing_desk_max_height: "50.8"
 
