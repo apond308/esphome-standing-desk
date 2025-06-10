@@ -1,16 +1,18 @@
-esphome:
-  name: standing-desk-example
-  platform: ESP8266
-  board: d1_mini
-
 packages:
-  standing_desk: github://tjhorner/esphome-standing-desk/configs/template.yaml
+  standing_desk: github://apond308/esphome-standing-desk/configs/template.yaml
+  presets_addon: github://apond308/esphome-standing-desk/configs/addons/presets.yaml
 
 substitutions:
-  # Required (replace these with your own values!)
-  standing_desk_uart_rx_pin: D1
-  standing_desk_up_pin: D3
-  standing_desk_down_pin: D4
+  standing_desk_variant: "jarvis"
+  standing_desk_uart_rx_pin: GPIO20
+  standing_desk_uart_tx_pin: GPIO21
+  
+  # Jarvis 4-bit button control pins (HS0-HS3)
+  button_bit0_pin: GPIO0  # HS0
+  button_bit1_pin: GPIO1  # HS1  
+  button_bit2_pin: GPIO2  # HS2
+  button_bit3_pin: GPIO3  # HS3
+  
   standing_desk_min_height: "25.2"
   standing_desk_max_height: "50.8"
 
@@ -18,3 +20,45 @@ substitutions:
   desk_height_name: "Desk Height"
   target_desk_height_name: "Target Desk Height"
   standing_desk_height_units: "in"
+
+# Home Assistant buttons for desk control
+button:
+  - platform: template
+    name: "Desk Preset 1"
+    icon: "mdi:numeric-1-box"
+    on_press:
+      - script.execute:
+          id: handset_button_press
+          button_value: ${desk_function_preset_1}
+      - delay: 100ms
+      - script.execute: handset_button_press_stop
+
+  - platform: template
+    name: "Desk Preset 2"
+    icon: "mdi:numeric-2-box"
+    on_press:
+      - script.execute:
+          id: handset_button_press
+          button_value: ${desk_function_preset_2}
+      - delay: 100ms
+      - script.execute: handset_button_press_stop
+
+  - platform: template
+    name: "Desk Preset 3"
+    icon: "mdi:numeric-3-box"
+    on_press:
+      - script.execute:
+          id: handset_button_press
+          button_value: ${desk_function_preset_3}
+      - delay: 100ms
+      - script.execute: handset_button_press_stop
+
+  - platform: template
+    name: "Desk Preset 4"
+    icon: "mdi:numeric-4-box"
+    on_press:
+      - script.execute:
+          id: handset_button_press
+          button_value: ${desk_function_preset_4}
+      - delay: 100ms
+      - script.execute: handset_button_press_stop

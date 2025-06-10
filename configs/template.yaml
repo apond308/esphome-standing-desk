@@ -1,5 +1,5 @@
 external_components:
-  - source: github://tjhorner/esphome-standing-desk
+  - source: github://apond308/esphome-standing-desk
     components: [ standing_desk_height ]
 
 substitutions:
@@ -7,11 +7,38 @@ substitutions:
   target_desk_height_name: "Target Desk Height"
   standing_desk_height_units: "in"
   standing_desk_variant: "auto"
+  desk_function_down: 1
+  desk_function_up: 2
+  desk_function_preset_1: 3
+  desk_function_preset_2: 4
+  desk_function_preset_3: 5
+  desk_function_preset_4: 6
+  desk_function_set_mem: 7
+
 
 uart:
   id: standing_desk_uart
   rx_pin: ${standing_desk_uart_rx_pin}
   baud_rate: 9600
+
+# GPIO outputs for the 4-bit button control system
+output:
+  - platform: gpio
+    pin: ${button_bit0_pin}
+    id: button_bit0
+    inverted: true  # Jarvis uses active low (pull to ground)
+  - platform: gpio
+    pin: ${button_bit1_pin}
+    id: button_bit1
+    inverted: true  # Jarvis uses active low (pull to ground)
+  - platform: gpio
+    pin: ${button_bit2_pin}
+    id: button_bit2
+    inverted: true  # Jarvis uses active low (pull to ground)
+  - platform: gpio
+    pin: ${button_bit3_pin}
+    id: button_bit3
+    inverted: true  # Jarvis uses active low (pull to ground)
 
 sensor:
   - platform: standing_desk_height
@@ -20,18 +47,48 @@ sensor:
     unit_of_measurement: ${standing_desk_height_units}
     variant: ${standing_desk_variant}
 
-output:
-  - platform: gpio
-    inverted: true
-    id: standing_desk_up_pin
-    pin:
-      number: ${standing_desk_up_pin}
-    
-  - platform: gpio
-    inverted: true
-    id: standing_desk_down_pin
-    pin:
-      number: ${standing_desk_down_pin}
+# Script to simulate button presses
+script:
+  - id: handset_button_press
+    parameters:
+      button_value: int
+    then:
+      # Clear all pins first
+      - output.turn_off: button_bit0
+      - output.turn_off: button_bit1
+      - output.turn_off: button_bit2
+      - output.turn_off: button_bit3
+      # Set the appropriate pins based on button_value
+      # Down = 1 (0001 binary) = bit0 low
+      # Up = 2 (0010 binary) = bit1 low
+      - if:
+          condition:
+            lambda: "return (button_value & 1) != 0;"
+          then:
+            - output.turn_on: button_bit0
+      - if:
+          condition:
+            lambda: "return (button_value & 2) != 0;"
+          then:
+            - output.turn_on: button_bit1
+      - if:
+          condition:
+            lambda: "return (button_value & 4) != 0;"
+          then:
+            - output.turn_on: button_bit2
+      - if:
+          condition:
+            lambda: "return (button_value & 8) != 0;"
+          then:
+            - output.turn_on: button_bit3
+
+  - id: handset_button_press_stop
+    then:
+      # Release all buttons
+      - output.turn_off: button_bit0
+      - output.turn_off: button_bit1
+      - output.turn_off: button_bit2
+      - output.turn_off: button_bit3
 
 number:
   - platform: template
@@ -49,16 +106,22 @@ number:
             condition:
               lambda: "return id(desk_height)->get_last_read() > x;"
             then:
-              - output.turn_on: standing_desk_down_pin
+              # Move down - button value 1
+              - script.execute:
+                  id: handset_button_press
+                  button_value: ${desk_function_down}
               - wait_until:
                   condition:
                     lambda: "return id(desk_height)->get_last_read() <= x + 0.4;"
                   timeout: 20s
-              - output.turn_off: standing_desk_down_pin
+              - script.execute: handset_button_press_stop
             else:
-              - output.turn_on: standing_desk_up_pin
+              # Move up - button value 2  
+              - script.execute:
+                  id: handset_button_press
+                  button_value: ${desk_function_up}
               - wait_until:
                   condition:
                     lambda: "return id(desk_height)->get_last_read() >= x - 0.4;"
                   timeout: 20s
-              - output.turn_off: standing_desk_up_pin
+              - script.execute: handset_button_press_stop
