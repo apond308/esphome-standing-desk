@@ -28,28 +28,24 @@ output:
       number: ${button_bit0_pin}
       mode: INPUT_OUTPUT_OPEN_DRAIN
       inverted: true
-      allow_other_uses: true
     id: button_bit0
   - platform: gpio
     pin: 
       number: ${button_bit1_pin}
       mode: INPUT_OUTPUT_OPEN_DRAIN
       inverted: true
-      allow_other_uses: true
     id: button_bit1
   - platform: gpio
     pin: 
       number: ${button_bit2_pin}
       mode: INPUT_OUTPUT_OPEN_DRAIN
       inverted: true
-      allow_other_uses: true
     id: button_bit2
   - platform: gpio
     pin: 
       number: ${button_bit3_pin}
       mode: INPUT_OUTPUT_OPEN_DRAIN
       inverted: true
-      allow_other_uses: true
     id: button_bit3
 
 sensor:
