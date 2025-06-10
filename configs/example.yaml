@@ -1,5 +1,5 @@
 packages:
-  standing_desk: github://apond308/esphome-standing-desk/configs/template.yaml
+  standing_desk: github://apond308/esphome-standing-desk/configs/template.yaml@cfa903a
 
 substitutions:
   standing_desk_variant: "jarvis"
